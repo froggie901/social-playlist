@@ -1,0 +1,8 @@
+---
+const { title, year, services = [] } = Astro.props;
+---
+<aside class="card watchbox">
+  <span class="card-kicker">Where to watch</span>
+  <strong class="card-title">{title}{year && <span class="card-sub"> ({year})</span>}</strong>
+  <ul class="pill-list">{services.map((s) => <li>{s}</li>)}</ul>
+</aside>

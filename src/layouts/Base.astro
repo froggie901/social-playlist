@@ -1,0 +1,58 @@
+---
+import { site, sections } from '../site.config';
+import { rel } from '../lib/rel';
+const { title, description = site.tagline, active = '' } = Astro.props;
+const p = Astro.url.pathname;
+const nav = [...sections.map((s) => ({ slug: s.slug, label: s.label })), { slug: 'about', label: 'About' }];
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title ? `${title} · ${site.name}` : `${site.name}: ${site.tagline}`}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title ?? site.name} />
+  <meta property="og:description" content={description} />
+  <meta name="theme-color" content="#efe4cf" />
+  <link rel="icon" href={rel(p, "favicon.svg")} type="image/svg+xml" />
+  <link rel="alternate" type="application/rss+xml" title={site.name} href={rel(p, 'rss.xml')} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..600&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f[]=tanker@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href={rel(p, 'styles.css')} />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href={rel(p, '')} aria-label={`${site.name} home`}>
+        <span class="wm-a">Social</span><span class="wm-b">Playlists</span>
+      </a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+      <nav id="primary-nav" class="primary-nav" aria-label="Primary">
+        <ul>
+          {nav.map((n) => <li><a href={rel(p, n.slug)} aria-current={active === n.slug ? 'page' : undefined}>{n.label}</a></li>)}
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main"><slot /></main>
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="footer-mark">Social Playlists</p>
+      <ul class="footer-links">
+        {nav.map((n) => <li><a href={rel(p, n.slug)}>{n.label}</a></li>)}
+        <li><a href={site.substackUrl} target="_blank" rel="noopener">Substack ↗</a></li>
+        <li><a href={rel(p, 'rss.xml')}>RSS</a></li>
+      </ul>
+      <p class="footer-fine">Cut, pasted, and photocopied in the Pacific Northwest.</p>
+    </div>
+  </footer>
+  <script is:inline>
+    const t = document.querySelector('.nav-toggle'), n = document.getElementById('primary-nav');
+    t && t.addEventListener('click', () => { const o = t.getAttribute('aria-expanded') === 'true'; t.setAttribute('aria-expanded', String(!o)); n.classList.toggle('open', !o); });
+  </script>
+</body>
+</html>

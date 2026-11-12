@@ -1,0 +1,17 @@
+---
+import { rel, fmtDate } from '../lib/rel';
+import { urlOf } from '../lib/posts';
+import { sections } from '../site.config';
+const { post, variant = 'row' } = Astro.props;
+const p = Astro.url.pathname;
+const sec = sections.find((s) => s.slug === post.data.section)!;
+const cover = post.data.cover ? (post.data.cover.startsWith('http') ? post.data.cover : rel(p, post.data.cover)) : rel(p, sec.img);
+---
+<article class={`postcard postcard--${variant}`}>
+  <a class="postcard-img" href={rel(p, urlOf(post))} tabindex="-1" aria-hidden="true"><img src={cover} alt="" loading="lazy" /></a>
+  <div class="postcard-text">
+    <p class="meta"><span class={`tag tag--${sec.tone}`}>{sec.label}</span> <time datetime={post.data.date.toISOString()}>{fmtDate(post.data.date)}</time>{post.data.sample && <span class="sample">Sample</span>}</p>
+    <h3 class="postcard-title"><a href={rel(p, urlOf(post))}>{post.data.title}</a></h3>
+    {post.data.dek && <p class="postcard-dek">{post.data.dek}</p>}
+  </div>
+</article>

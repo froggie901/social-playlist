@@ -1,0 +1,12 @@
+---
+const { title, when, where, map, rsvp } = Astro.props;
+---
+<aside class="card event">
+  <span class="card-kicker">Event</span>
+  <strong class="card-title">{title}</strong>
+  <dl>
+    <dt>When</dt><dd>{when}</dd>
+    <dt>Where</dt><dd>{where}{map && <> · <a href={map} target="_blank" rel="noopener">Map ↗</a></>}</dd>
+  </dl>
+  {rsvp && <a class="btn" href={rsvp}>RSVP</a>}
+</aside>

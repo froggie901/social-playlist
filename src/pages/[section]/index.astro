@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import { sections } from '../../site.config';
+import { rel } from '../../lib/rel';
+import { allPosts } from '../../lib/posts';
+export function getStaticPaths() { return sections.map((s) => ({ params: { section: s.slug } })); }
+const { section } = Astro.params;
+const s = sections.find((x) => x.slug === section)!;
+const p = Astro.url.pathname;
+const posts = (await allPosts()).filter((x) => x.data.section === section);
+---
+<Base title={s.label} description={s.blurb} active={s.slug}>
+  <header class={`section-hero section-hero--${s.tone}`}>
+    <div class="wrap section-hero-grid">
+      <div>
+        <p class="stamp">Section</p>
+        <h1 class="section-title">{s.label}</h1>
+        <p class="section-blurb">{s.blurb}</p>
+      </div>
+      <img class="section-art taped" src={rel(p, s.img)} alt="" />
+    </div>
+  </header>
+  <section class="wrap post-list">
+    {posts.length ? posts.map((post) => <PostCard post={post} />) : <p class="empty">Nothing here yet. The first one is on its way.</p>}
+  </section>
+  <Subscribe />
+</Base>
