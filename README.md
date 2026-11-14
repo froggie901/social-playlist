@@ -32,3 +32,12 @@ MDX tip: `{`, `}`, and `<` mean code. Escape them as `\{` or use plain `.md`.
 
 ## Settings
 `src/site.config.ts`: name, email, Substack URL, highlights on/off, section blurbs.
+
+## Publishing
+
+The site is hosted on GitHub Pages. Every push to `main` runs
+`.github/workflows/deploy.yml`, which builds the site and publishes it.
+`public/CNAME` tells GitHub Pages to serve the site at social-playlists.com.
+
+To publish a new post: add the `.mdx` file, commit, and push. The site
+updates in a minute or two (see the repo's Actions tab).
