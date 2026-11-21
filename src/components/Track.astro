@@ -1,0 +1,11 @@
+---
+const { n, artist, title, href, via = 'Listen' } = Astro.props;
+---
+<section class="track">
+  <div class="track-num" aria-hidden="true">{String(n).padStart(2, '0')}</div>
+  <div class="track-body">
+    <h3 class="track-title"><span class="track-artist">{artist}</span> <span class="track-song">“{title}”</span></h3>
+    <slot />
+    {href && <a class="track-link" href={href} target="_blank" rel="noopener">{via} ↗</a>}
+  </div>
+</section>

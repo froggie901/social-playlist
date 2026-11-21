@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostCard from '../../components/PostCard.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import Track from '../../components/Track.astro';
+import PullQuote from '../../components/PullQuote.astro';
+import Note from '../../components/Note.astro';
+import Poem from '../../components/Poem.astro';
+import Photo from '../../components/Photo.astro';
+import BookCard from '../../components/BookCard.astro';
+import WhereToWatch from '../../components/WhereToWatch.astro';
+import EventCard from '../../components/EventCard.astro';
+import Spotify from '../../components/Spotify.astro';
+import { render } from 'astro:content';
+import { sections, site } from '../../site.config';
+import { rel, fmtDate } from '../../lib/rel';
+import { allPosts, slugOf } from '../../lib/posts';
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  return posts.map((post) => ({ params: { section: post.data.section, slug: slugOf(post.id) }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+const s = sections.find((x) => x.slug === post.data.section)!;
+const p = Astro.url.pathname;
+const related = (await allPosts()).filter((x) => x.id !== post.id && !x.data.sample).slice(0, 3);
+const components = { Track, PullQuote, Note, Poem, Photo, BookCard, WhereToWatch, EventCard, Spotify };
+---
+<Base title={post.data.title} description={post.data.dek} active={s.slug}>
+  <article class="article">
+    <header class="wrap article-head">
+      <p class="meta"><a class={`tag tag--${s.tone}`} href={rel(p, s.slug)}>{s.label}</a> <time datetime={post.data.date.toISOString()}>{fmtDate(post.data.date)}</time>{post.data.sample && <span class="sample">Sample</span>}</p>
+      <h1 class="article-title">{post.data.title}</h1>
+      {post.data.dek && <p class="article-dek">{post.data.dek}</p>}
+      {site.annotations && (
+        <div class="annotate">
+          <button class="btn btn--ghost" id="annotate-btn" type="button">Turn on highlights &amp; comments</button>
+          <a class="annotate-about" href={`${rel(p, 'about')}#highlights`}>How this works</a>
+        </div>
+      )}
+    </header>
+    <div class="wrap prose"><Content components={components} /></div>
+  </article>
+  {related.length > 0 && (
+    <section class="wrap related" aria-labelledby="rel-h">
+      <h2 id="rel-h" class="section-label section-label--sm"><span>Keep digging</span></h2>
+      <div class="also-list">{related.map((r) => <PostCard post={r} />)}</div>
+    </section>
+  )}
+  <Subscribe />
+  <script is:inline>
+    (function(){
+      const b = document.getElementById('annotate-btn'); if (!b) return;
+      b.addEventListener('click', () => {
+        if (window.__hyp) return; window.__hyp = true;
+        window.hypothesisConfig = () => ({ openSidebar: true });
+        const sc = document.createElement('script'); sc.src = 'https://hypothes.is/embed.js'; sc.async = true; document.body.appendChild(sc);
+        b.textContent = 'Highlights on: select any text'; b.disabled = true;
+      });
+    })();
+  </script>
+</Base>

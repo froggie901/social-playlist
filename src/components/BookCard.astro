@@ -1,0 +1,9 @@
+---
+const { title, author, href } = Astro.props;
+---
+<aside class="card book">
+  <span class="card-kicker">Book ref</span>
+  <strong class="card-title">{title}</strong>
+  <span class="card-sub">{author}</span>
+  {href && <a href={href} target="_blank" rel="noopener">Find the book ↗</a>}
+</aside>

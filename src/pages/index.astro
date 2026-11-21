@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import PostCard from '../components/PostCard.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { sections, site } from '../site.config';
+import { rel, fmtDate } from '../lib/rel';
+import { allPosts, urlOf } from '../lib/posts';
+const p = Astro.url.pathname;
+const posts = await allPosts();
+const real = posts.filter((x) => !x.data.sample);
+const latest = real[0] ?? posts[0];
+const latestSec = sections.find((s) => s.slug === latest.data.section)!;
+const latestCover = latest.data.cover ? (latest.data.cover.startsWith('http') ? latest.data.cover : rel(p, latest.data.cover)) : rel(p, latestSec.img);
+const counts = Object.fromEntries(sections.map((s) => [s.slug, posts.filter((x) => x.data.section === s.slug && !x.data.sample).length]));
+---
+<Base>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="stamp">Issue no. 01 · Est. 2026</p>
+        <h1 class="hero-title"><span>Things to</span> <span class="hl hl--red">watch,</span> <span class="hl hl--blue">read,</span> <span class="hl hl--mustard">hear,</span> <span>&amp; show up for.</span></h1>
+        <p class="hero-dek">A personal mixtape of a website. Music picks, screen picks, book refs, my own writing, and the occasional living-room show.</p>
+      </div>
+      <figure class="hero-art taped">
+        <img src={rel(p, 'img/hero.jpg')} alt="Collage of a vinyl record, a cassette, an open book, a film strip, and a concert ticket in red and blue risograph ink" />
+      </figure>
+    </div>
+  </section>
+
+  <section class="wrap blocks" aria-label="Sections">
+    {sections.map((s, i) => (
+      <a class={`block block--${s.tone} block--${i}`} href={rel(p, s.slug)}>
+        <img src={rel(p, s.img)} alt="" loading="lazy" />
+        <span class="block-label">{s.label}</span>
+        <span class="block-blurb">{s.blurb}</span>
+        <span class="block-count">{counts[s.slug] ? `${counts[s.slug]} post${counts[s.slug] > 1 ? 's' : ''}` : 'Coming soon'} →</span>
+      </a>
+    ))}
+  </section>
+
+  <section class="wrap latest" aria-labelledby="latest-h">
+    <h2 id="latest-h" class="section-label"><span>Latest drop</span></h2>
+    <article class="latest-card">
+      <a class="latest-img taped" href={rel(p, urlOf(latest))} tabindex="-1" aria-hidden="true"><img src={latestCover} alt="" /></a>
+      <div class="latest-text">
+        <p class="meta"><span class={`tag tag--${latestSec.tone}`}>{latestSec.label}</span> <time datetime={latest.data.date.toISOString()}>{fmtDate(latest.data.date)}</time></p>
+        <h3 class="latest-title"><a href={rel(p, urlOf(latest))}>{latest.data.title}</a></h3>
+        {latest.data.dek && <p class="latest-dek">{latest.data.dek}</p>}
+        <a class="btn" href={rel(p, urlOf(latest))}>Read it</a>
+      </div>
+    </article>
+    <div class="also">
+      <h2 class="section-label section-label--sm"><span>Also in the stack</span></h2>
+      <div class="also-list">{real.slice(1, 4).map((post) => <PostCard post={post} />)}</div>
+    </div>
+  </section>
+
+  <Subscribe />
+</Base>

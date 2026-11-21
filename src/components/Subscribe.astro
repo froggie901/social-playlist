@@ -1,0 +1,14 @@
+---
+import { site } from '../site.config';
+---
+<section class="subscribe" aria-labelledby="sub-h">
+  <div class="subscribe-inner">
+    <h2 id="sub-h" class="subscribe-title">Get the next one in your inbox</h2>
+    <p>New posts land in your email through my Substack. Free, and you can leave anytime.</p>
+    <form class="subscribe-form" action={`${site.substackUrl}/subscribe`} method="get" target="_blank">
+      <label class="sr-only" for="sub-email">Email address</label>
+      <input id="sub-email" type="email" name="email" placeholder="you@example.com" required />
+      <button class="btn" type="submit">Subscribe</button>
+    </form>
+  </div>
+</section>

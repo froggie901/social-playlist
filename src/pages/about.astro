@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site.config';
+import { rel } from '../lib/rel';
+const p = Astro.url.pathname;
+---
+<Base title="About" description="About Social Playlists, how to get in touch, and how to propose an event." active="about">
+  <header class="section-hero section-hero--paper">
+    <div class="wrap section-hero-grid">
+      <div>
+        <p class="stamp">About</p>
+        <h1 class="section-title">Hi, I’m Patrick.</h1>
+        <p class="section-blurb">Chemist by training, technical writer by trade, and the friend who still wants to burn you a CD.</p>
+      </div>
+      <img class="section-art taped" src={rel(p, 'img/listen.jpg')} alt="" />
+    </div>
+  </header>
+
+  <div class="wrap about-grid">
+    <section class="about-block" id="bio" aria-labelledby="bio-h">
+      <h2 id="bio-h" class="about-h">Bio</h2>
+      <p>Social Playlists is where I keep the things I can’t stop telling people about: records in my headphones, what’s on the screen, books worth your shelf, my own notes from the living room chair, and gatherings where we can share all of it in person.</p>
+      <p>Most writing here is also cross-posted to <a href={site.substackUrl} target="_blank" rel="noopener">my Substack</a>.</p>
+    </section>
+
+    <section class="about-block" id="contact" aria-labelledby="contact-h">
+      <h2 id="contact-h" class="about-h">Contact</h2>
+      <p>Say hi, send a recommendation, or tell me I’m wrong about a record.</p>
+      <p><a class="btn" href={`mailto:${site.email}`}>{site.email}</a></p>
+    </section>
+
+    <section class="about-block about-block--wide card" id="propose" aria-labelledby="propose-h">
+      <h2 id="propose-h" class="about-h">Propose an event</h2>
+      <p>Got a listening night, a screening, a reading, or a show in mind? Tell me about it. This opens an email to me with your details filled in.</p>
+      <form class="propose-form" id="propose-form">
+        <label>Your name<input name="name" required /></label>
+        <label>Your email<input name="email" type="email" required /></label>
+        <label>What kind of event?
+          <select name="kind"><option>Listening night</option><option>Screening</option><option>Reading or book swap</option><option>Live show</option><option>Something else</option></select>
+        </label>
+        <label>Rough date or season<input name="when" placeholder="e.g. a Friday in March" /></label>
+        <label class="full">The idea<textarea name="idea" rows="5" required placeholder="What, where, and who it's for"></textarea></label>
+        <button class="btn" type="submit">Send proposal</button>
+      </form>
+    </section>
+
+    <section class="about-block about-block--wide" id="highlights" aria-labelledby="hl-h">
+      <h2 id="hl-h" class="about-h">Highlights &amp; comments: how they work</h2>
+      <p>On any post, you can press <strong>Turn on highlights &amp; comments</strong> to highlight passages and leave notes, much like Medium. This runs on <a href="https://web.hypothes.is/" target="_blank" rel="noopener">Hypothesis</a>, an outside annotation tool. It stays off until you press the button, so if you just want to read, nothing from Hypothesis loads.</p>
+
+      <div class="faq">
+        <div class="faq-item">
+          <h3>Who owns Hypothesis?</h3>
+          <p>Hypothesis started in 2011 as a nonprofit founded by Dan Whaley (<a href="https://www.libraryjournal.com/story/ithaka-invests-in-open-access-annotation-service-hypothesis" target="_blank" rel="noopener">Library Journal</a>). In 2022 the team formed Annotation Unlimited, PBC (“Anno”), a public benefit corporation that now runs the service, while the nonprofit Hypothesis Project focuses on open-annotation advocacy and standards (<a href="https://web.hypothes.is/blog/say-hello-to-anno/" target="_blank" rel="noopener">Hypothesis blog</a>). Anno’s seed funding included a $2.5M investment from ITHAKA, the nonprofit behind JSTOR (<a href="https://www.niso.org/niso-io/2022/08/ithaka-invests-open-annotation-leader-hypothesis" target="_blank" rel="noopener">NISO</a>). The software is open source under the BSD 2-Clause license (<a href="https://web.hypothes.is/developers/" target="_blank" rel="noopener">Hypothesis developer docs</a>).</p>
+        </div>
+        <div class="faq-item">
+          <h3>Do I need an account?</h3>
+          <p>Yes, to write a highlight or comment you need a free Hypothesis account. Reading other people’s public notes doesn’t require one.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What data does it collect?</h3>
+          <p>Signing up asks for a username, email, and profile information, and your notes are tied to that account. Like most web services, it also logs your IP address, location, operating system, browser type, and access times, keeps those logs for a limited time, and may send IP addresses and usernames to error-tracking providers. Hypothesis says it “doesn’t share user information with advertisers, affiliates or partners” and does “not monetize our user traffic in any way.” Its privacy policy was last updated September 12, 2019 (<a href="https://web.hypothes.is/privacy/" target="_blank" rel="noopener">Hypothesis privacy policy</a>).</p>
+        </div>
+        <div class="faq-item">
+          <h3>Who owns my comments?</h3>
+          <p>It depends on where you post. Public annotations are dedicated to the public domain (CC0), which means anyone can copy and reuse them, even commercially. Annotations made in a group stay yours; you only license Hypothesis to show them (<a href="https://web.hypothes.is/terms-of-service/" target="_blank" rel="noopener">Hypothesis terms of service</a>). You can also keep a note private, visible only to you.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Can I delete things?</h3>
+          <p>You can edit or delete your annotations, or change who can see them. Public notes can be fetched through Hypothesis’s public API, so copies others made before you deleted them may remain. To delete your whole account, email support@hypothes.is (<a href="https://web.hypothes.is/privacy/" target="_blank" rel="noopener">Hypothesis privacy policy</a>).</p>
+        </div>
+        <div class="faq-item">
+          <h3>What does Social Playlists see?</h3>
+          <p>I don’t run Hypothesis and can’t see your account or private notes. Public notes on this site are visible to me and everyone else, just like they are to any reader.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script is:inline define:vars={{ email: site.email }}>
+    document.getElementById('propose-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const body = `Name: ${f.get('name')}\nEmail: ${f.get('email')}\nType: ${f.get('kind')}\nWhen: ${f.get('when')}\n\n${f.get('idea')}`;
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent('Event proposal: ' + f.get('kind'))}&body=${encodeURIComponent(body)}`;
+    });
+  </script>
+</Base>
